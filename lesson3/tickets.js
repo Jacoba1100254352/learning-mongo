@@ -13,33 +13,28 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/test', {
   useUnifiedTopology: true,
   useNewUrlParser: true
-});
+})
 
 const ticketSchema = new mongoose.Schema({
-  name: String,
-  problem: String,
+	name: String,
+	problem: String,
 });
 
-// create a virtual paramter that turns the default _id field into id
 ticketSchema.virtual('id')
-  .get(function() {
-    return this._id.toHexString();
-  });
-
-// Ensure virtual fields are serialised when we turn this into a JSON object
-ticketSchema.set('toJSON', {
-  virtuals: true
+.get(function() {
+	return this._id.toHexString();
 });
 
-// create a model for tickets
+ticketSchema.set('toJSON', {
+	virtuals: true
+});
+
 const Ticket = mongoose.model('Ticket', ticketSchema);
 
 app.get('/api/tickets', async (req, res) => {
   try {
     let tickets = await Ticket.find();
-    res.send({
-      tickets: tickets
-    });
+    res.send({tickets: tickets});
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
@@ -47,15 +42,13 @@ app.get('/api/tickets', async (req, res) => {
 });
 
 app.post('/api/tickets', async (req, res) => {
-  const ticket = new Ticket({
+    const ticket = new Ticket({
     name: req.body.name,
     problem: req.body.problem
   });
   try {
     await ticket.save();
-    res.send({
-      ticket: ticket
-    });
+    res.send({ticket:ticket});
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
@@ -75,3 +68,8 @@ app.delete('/api/tickets/:id', async (req, res) => {
 });
 
 app.listen(3000, () => console.log('Server listening on port 3000!'));
+
+
+
+
+
